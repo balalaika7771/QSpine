@@ -45,6 +45,8 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
+    void wheelEvent(QWheelEvent* event);
+
 private:
     void setupVertexAttribs();
 

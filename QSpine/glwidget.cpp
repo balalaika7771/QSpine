@@ -253,3 +253,8 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
     }
     m_lastPos = event->position().toPoint();
 }
+
+
+void GLWidget::wheelEvent(QWheelEvent* event) {
+       
+}
