@@ -112,10 +112,43 @@ public:
             if (ind > x.size()-1) {
                 ind = x.size()-1;
             }
-            pz.position = QVector3D(x[ind]*0.2f,y[ind] * 0.2f,z[ind] * 0.2f);
-            pz.rotation = QVector3D(0,0,0);
+            pz.position = QVector3D(x[ind]*0.17f,y[ind] * 0.17f,z[ind] * 0.17f);
+            
+            int indP1 = index[i][0];
+            int indP2 = index[i][2];
+            QVector3D verticalVector(0.0, 1.0, 0.0); // Вертикальный вектор
+            QVector3D pointA(x[indP1], y[indP1], z[indP1]); // Первая точка
+            QVector3D pointB(x[indP2], y[indP2], z[indP2]); // Вторая точка
+
+            QVector3D direction = (pointB - pointA).normalized(); // Направление между точками
+            QQuaternion rotation = QQuaternion::rotationTo(verticalVector, direction); // Получение кватерниона поворота
+
+            pz.rotation = rotation.toEulerAngles();
+
+            
+            
             res.push_back(pz);
         }
+
+        float x = 0, y = 0, z = 0;
+        for (size_t i = 0; i < res.size(); i++)
+        {
+            x += res[i].position.x();
+            y += res[i].position.y();
+            z += res[i].position.z();
+        }
+        x /= res.size();
+        y /= res.size();
+        z /= res.size();
+        for (size_t i = 0; i < res.size(); i++)
+        {
+            res[i].position.setX(res[i].position.x() - x);
+            res[i].position.setY(res[i].position.y() - y);
+            res[i].position.setZ(res[i].position.z() - z);
+        }
+
+
+
         return res;
     }
     

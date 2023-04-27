@@ -49,11 +49,17 @@ protected:
 
 private:
     void setupVertexAttribs();
-
+    std::vector<pozvonok> sp;
     bool m_core;
     int m_xRot = 0;
     int m_yRot = 0;
     int m_zRot = 0;
+    int m_xTrans = 0;
+    int m_yTrans = 0;
+    int m_zTrans = 0;
+
+    int num_pozvonok = 0;
+    int zoom = -50;
     QPoint m_lastPos;
     Spine m_spine;
     QOpenGLVertexArrayObject m_vao;

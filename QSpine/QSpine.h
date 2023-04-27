@@ -1,5 +1,5 @@
 #pragma once
-
+#include "glwidget.h"
 #include <QtWidgets/QMainWindow>
 #include "ui_QSpine.h"
 //#define QT_OPENGL_SUPPORT

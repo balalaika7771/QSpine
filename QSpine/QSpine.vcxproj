@@ -91,7 +91,12 @@
     <QtRcc Include="QSpine.qrc" />
     <QtUic Include="QSpine.ui" />
     <QtMoc Include="QSpine.h" />
-    <ClCompile Include="glwidget.cpp" />
+    <ClCompile Include="glwidget.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </ClCompile>
     <ClCompile Include="Spine.cpp" />
     <ClCompile Include="QSpine.cpp" />
     <ClCompile Include="main.cpp" />
