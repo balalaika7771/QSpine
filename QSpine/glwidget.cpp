@@ -9,7 +9,7 @@
 
 bool GLWidget::m_transparent = false;
 
-GLWidget::GLWidget(QWidget* parent)
+GLWidget::GLWidget( QWidget* parent )
 	: QOpenGLWidget(parent)
 {
 	m_core = QSurfaceFormat::defaultFormat().profile() == QSurfaceFormat::CoreProfile;
@@ -20,11 +20,17 @@ GLWidget::GLWidget(QWidget* parent)
 		fmt.setAlphaBufferSize(8);
 		setFormat(fmt);
 	}
+	
 }
 
 GLWidget::~GLWidget()
 {
 	cleanup();
+}
+
+void GLWidget::setSpine(std::vector<pozvonok> _spine)
+{
+	spine = _spine;
 }
 
 QSize GLWidget::minimumSizeHint() const
@@ -35,6 +41,12 @@ QSize GLWidget::minimumSizeHint() const
 QSize GLWidget::sizeHint() const
 {
 	return QSize(800, 800);
+}
+
+pozvonok GLWidget::getCurSpine()
+{
+
+	return spine[num_pozvonok];
 }
 
 static void qNormalizeAngle(int& angle)
@@ -170,13 +182,12 @@ void GLWidget::initializeGL()
 
 	m_vao.create();
 	QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
-	                                                                 
-	parserFile pr("SDL_VBL_1.txt");
-	sp = pr.get_spine();
-	for (size_t i = 0; i < sp.size(); i++)
+
+	
+	for (size_t i = 0; i < spine.size(); i++)
 	{
-		QString str = QString::fromUtf8(sp[i].spine_name + ".obj");
-		m_spine.loadObj(str, sp[i].position, sp[i].rotation);
+		QString str = QString::fromUtf8(spine[i].spine_name + ".obj");
+		m_spine.loadObj(str, spine[i].position, spine[i].rotation);
 	}
 
 	// Setup our vertex buffer object.
@@ -194,17 +205,29 @@ void GLWidget::initializeGL()
 
 	m_program->release();
 }
+// Rewritten code with comments
 
 void GLWidget::setupVertexAttribs()
 {
+	// Bind the spineVbo
 	m_spineVbo.bind();
+
+	// Get the current context's functions
 	QOpenGLFunctions* f = QOpenGLContext::currentContext()->functions();
+
+	// Enable vertex attribute 0 and 1
 	f->glEnableVertexAttribArray(0);
 	f->glEnableVertexAttribArray(1);
+
+	// Set the vertex attribute 0 to 3 floats, not normalized, and 6 bytes apart
 	f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
 		nullptr);
+
+	// Set the vertex attribute 1 to 3 floats, not normalized, and 6 bytes apart, starting 3 bytes in
 	f->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
 		reinterpret_cast<void*>(3 * sizeof(GLfloat)));
+
+	// Release the spineVbo
 	m_spineVbo.release();
 }
 // Rewritten code with comments
@@ -283,12 +306,12 @@ void GLWidget::wheelEvent(QWheelEvent* event) {
 	if (!(event->buttons() & Qt::LeftButton || event->buttons() & Qt::RightButton)) { //Check if left or right mouse button is pressed
 		return;
 	}
-	
-	
+
+
 	int numSteps = event->angleDelta().toPointF().y() / 15; //Calculate number of steps wheel has moved
 	auto h = event->modifiers();
-	if ( h & Qt::ShiftModifier) {
-		zoom -= numSteps/3;
+	if (h & Qt::ShiftModifier) {
+		zoom -= numSteps / 3;
 		if (zoom > 0) {
 			zoom = 0;
 		}
@@ -302,13 +325,13 @@ void GLWidget::wheelEvent(QWheelEvent* event) {
 	if (num_pozvonok < 0) {
 		num_pozvonok = 0;
 	}
-	else if (num_pozvonok >= sp.size()) {
-		num_pozvonok = sp.size() - 1;
+	else if (num_pozvonok >= spine.size()) {
+		num_pozvonok = spine.size() - 1;
 	}
 
-	m_xTrans = -sp[num_pozvonok].position.x(); //Set m_xTrans, m_yTrans, and m_zTrans to corresponding values in sp array
-	m_yTrans = -sp[num_pozvonok].position.y();
-	m_zTrans = -sp[num_pozvonok].position.z();
+	m_xTrans = -spine[num_pozvonok].position.x(); //Set m_xTrans, m_yTrans, and m_zTrans to corresponding values in sp array
+	m_yTrans = -spine[num_pozvonok].position.y();
+	m_zTrans = -spine[num_pozvonok].position.z();
 
 
 }

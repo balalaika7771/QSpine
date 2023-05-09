@@ -18,15 +18,16 @@ class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
     Q_OBJECT
 
 public:
-    GLWidget(QWidget *parent = nullptr);
+    GLWidget(QWidget* parent = nullptr);
     ~GLWidget();
-
+    void setSpine(std::vector<pozvonok>);
     static bool isTransparent() { return m_transparent; }
     static void setTransparent(bool t) { m_transparent = t; }
 
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
 
+    pozvonok getCurSpine();
 public slots:
     void setXRotation(int angle);
     void setYRotation(int angle);
@@ -42,14 +43,14 @@ protected:
     void initializeGL() override;
     void paintGL() override;
     void resizeGL(int width, int height) override;
+
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-
     void wheelEvent(QWheelEvent* event);
 
 private:
     void setupVertexAttribs();
-    std::vector<pozvonok> sp;
+    std::vector<pozvonok> spine;
     bool m_core;
     int m_xRot = 0;
     int m_yRot = 0;

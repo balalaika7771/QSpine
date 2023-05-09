@@ -20,7 +20,7 @@ class parserFile
     std::vector<std::string> spine_name;
 public:
     parserFile(std::string file_path) {
-        std::ifstream file("SDL_VBL.txt"); // открыть файл для чтения
+        std::ifstream file(file_path); // открыть файл для чтения
         if (file.is_open()) { // проверить, что файл успешно открыт
             std::string line;
             while (std::getline(file, line)) { // читать файл построчно
@@ -100,6 +100,8 @@ public:
             }
             file.close(); // закрыть файл
         }
+       // std::reverse(spine_name.begin(), spine_name.end());
+ 
     }
 
     std::vector<pozvonok> get_spine() {
@@ -125,7 +127,7 @@ public:
 
             pz.rotation = rotation.toEulerAngles();
 
-            
+            pz.rotation = QVector3D(pz.rotation.x(), pz.rotation.y(), pz.rotation.z());
             
             res.push_back(pz);
         }
