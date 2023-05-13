@@ -6,7 +6,7 @@
 #include <qvector3d.h>
 struct pozvonok
 {
-    std::string spine_name;
+    std::string name;
     QVector3D position;
     QVector3D rotation;
 };
