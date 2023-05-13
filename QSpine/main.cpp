@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     QSharedPointer<QToolBar> toolBar = QSharedPointer<QToolBar>(new QToolBar(&mainWindow));
     QSharedPointer<QLabel> text3 = QSharedPointer<QLabel>(new QLabel(&mainWindow));
 
-    parserFile pr("SDL_VBL.txt");
+    parserFile pr("SDL_VBL_1.txt");
     glWidget->setSpine(pr.get_spine());
     text->setText("eawde");
     // ƒобавление действий на панель инструментов

@@ -277,7 +277,7 @@ void GLWidget::paintGL()
 void GLWidget::resizeGL(int w, int h)
 {
 	m_proj.setToIdentity();
-	m_proj.perspective(45.0f, GLfloat(w) / h, 0.01f, 500.0f);
+	m_proj.perspective(50.0f, GLfloat(w) / h, 0.01f, 500.0f);
 }
 
 void GLWidget::mousePressEvent(QMouseEvent* event)

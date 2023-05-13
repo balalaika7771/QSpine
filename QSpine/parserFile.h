@@ -114,7 +114,7 @@ public:
             if (ind > x.size()-1) {
                 ind = x.size()-1;
             }
-            pz.position = QVector3D(x[ind]*0.17f,y[ind] * 0.17f,z[ind] * 0.17f);
+            pz.position = QVector3D(x[ind]*0.13f,y[ind] * 0.13f,z[ind] * 0.13f);
             
             int indP1 = index[i][0];
             int indP2 = index[i][2];
