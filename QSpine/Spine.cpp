@@ -93,6 +93,7 @@ void Spine::quad(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat x3, GLf
     add(QVector3D(x2, y2, 0.05f), n);
     add(QVector3D(x3, y3, 0.05f), n);
     add(QVector3D(x4, y4, 0.05f), n);
+
 }
 
 void Spine::extrude(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2)

@@ -8,3 +8,4 @@ index=[12 23 28    29 35 41    44 51 58    61 67 74    77 83 89    91 97 103    
 
 spine_name=[S1 L5 L4 L3 L2 L1 T12 T11 T10 T9 T8 T7 T6 T5 T4 T3 T2 T1 C7 ];
 
+disk_name=[ d23 d22 d21 d20 d19 d18 d17 d16 d15 d14 d13 d12 d11 d10 d9 d8 d7 d6]

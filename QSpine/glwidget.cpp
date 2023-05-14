@@ -28,7 +28,7 @@ GLWidget::~GLWidget()
 	cleanup();
 }
 
-void GLWidget::setSpine(std::vector<pozvonok> _spine)
+void GLWidget::setSpine(std::vector<std::shared_ptr<Object>> _spine)
 {
 	spine = _spine;
 }
@@ -43,7 +43,7 @@ QSize GLWidget::sizeHint() const
 	return QSize(800, 800);
 }
 
-pozvonok GLWidget::getCurSpine()
+std::shared_ptr<Object> GLWidget::getCurSpine()
 {
 
 	return spine[num_pozvonok];
@@ -186,8 +186,8 @@ void GLWidget::initializeGL()
 	
 	for (size_t i = 0; i < spine.size(); i++)
 	{
-		QString str = QString::fromUtf8(spine[i].spine_name + ".obj");
-		m_spine.loadObj(str, spine[i].position, spine[i].rotation);
+		QString str = QString::fromUtf8(spine[i]->name + ".obj");
+		m_spine.loadObj(str, spine[i]->position, spine[i]->rotation);
 	}
 
 	// Setup our vertex buffer object.
@@ -202,7 +202,14 @@ void GLWidget::initializeGL()
 
 	// Light position is fixed.
 	m_program->setUniformValue(m_lightPosLoc, QVector3D(-100, -50, 40));
-
+	std::vector<std::shared_ptr<Object>> nspine;
+	for (size_t i = 0; i < spine.size(); i++)
+	{
+		if (spine[i]->imActive()) {
+			nspine.push_back(spine[i]);
+		}
+	}
+	spine = nspine;
 	m_program->release();
 }
 // Rewritten code with comments
@@ -329,9 +336,9 @@ void GLWidget::wheelEvent(QWheelEvent* event) {
 		num_pozvonok = spine.size() - 1;
 	}
 
-	m_xTrans = -spine[num_pozvonok].position.x(); //Set m_xTrans, m_yTrans, and m_zTrans to corresponding values in sp array
-	m_yTrans = -spine[num_pozvonok].position.y();
-	m_zTrans = -spine[num_pozvonok].position.z();
+	m_xTrans = -spine[num_pozvonok]->position.x(); //Set m_xTrans, m_yTrans, and m_zTrans to corresponding values in sp array
+	m_yTrans = -spine[num_pozvonok]->position.y();
+	m_zTrans = -spine[num_pozvonok]->position.z();
 
 
 }

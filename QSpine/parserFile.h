@@ -4,11 +4,29 @@
 #include <sstream>
 #include <fstream>
 #include <qvector3d.h>
-struct pozvonok
+#include <memory>
+struct Object
 {
     std::string name;
     QVector3D position;
     QVector3D rotation;
+    virtual bool imActive() {
+        return false;
+    }
+};
+
+struct disk : public Object
+{
+    bool imActive() override {
+        return false;
+    }
+};
+
+struct pozvonok : public Object
+{
+    bool imActive() override {
+        return true;
+    }
 };
 
 class parserFile
@@ -18,6 +36,7 @@ class parserFile
     std::vector<double> z;
     std::vector<std::vector<int>> index;
     std::vector<std::string> spine_name;
+    std::vector<std::string> disk_name;
 public:
     parserFile(std::string file_path) {
         std::ifstream file(file_path); // открыть файл для чтения
@@ -96,7 +115,19 @@ public:
                     }
                     continue;//следующая строка
                 }
+                pos = line.find("disk_name");
+                if (pos != std::string::npos) {
+                    line.erase(pos, std::string("disk_name=[").length());
+                    pos = line.find("]");
+                    line.erase(pos, std::string("];").length());
+                    std::istringstream iss(line);
 
+                    std::string substring;
+                    while (iss >> substring) {
+                        disk_name.push_back(substring);
+                    }
+                    continue;//следующая строка
+                }
             }
             file.close(); // закрыть файл
         }
@@ -104,16 +135,17 @@ public:
  
     }
 
-    std::vector<pozvonok> get_spine() {
-        std::vector<pozvonok> res;
+    std::vector<std::shared_ptr<Object>> get_spine() {
+        std::vector<std::shared_ptr<Object>> res;
         for (size_t i = 0; i < spine_name.size(); i++)
         {
             pozvonok pz;
-            pz.spine_name = spine_name[i];
+            pz.name = spine_name[i];
             int ind = index[i][1];
             if (ind > x.size()-1) {
                 ind = x.size()-1;
             }
+
             pz.position = QVector3D(x[ind]*0.13f,y[ind] * 0.13f,z[ind] * 0.13f);
             
             int indP1 = index[i][0];
@@ -129,29 +161,50 @@ public:
 
             pz.rotation = QVector3D(pz.rotation.x(), pz.rotation.y(), pz.rotation.z());
             
-            res.push_back(pz);
+            res.push_back(std::shared_ptr<Object>(new pozvonok(pz)));
         }
+
+        for (size_t i = 0; i < disk_name.size(); i++)
+        {
+            disk dk;
+            dk.name = disk_name[i];
+            int ind = (index[i][1] + index[i+1][1])/2;
+            if (ind > x.size() - 1) {
+                ind = x.size() - 1;
+            }
+
+            dk.position = QVector3D(x[ind] * 0.13f, y[ind] * 0.13f, z[ind] * 0.13f);
+
+            
+            dk.rotation = (res[i]->rotation + res[i + 1]->rotation)/2;
+
+            res.push_back(std::shared_ptr<Object>(new disk(dk)));
+        }
+
+
+
+
 
         float x = 0, y = 0, z = 0;
         for (size_t i = 0; i < res.size(); i++)
         {
-            x += res[i].position.x();
-            y += res[i].position.y();
-            z += res[i].position.z();
+            x += res[i]->position.x();
+            y += res[i]->position.y();
+            z += res[i]->position.z();
         }
         x /= res.size();
         y /= res.size();
         z /= res.size();
         for (size_t i = 0; i < res.size(); i++)
         {
-            res[i].position.setX(res[i].position.x() - x);
-            res[i].position.setY(res[i].position.y() - y);
-            res[i].position.setZ(res[i].position.z() - z);
+            res[i]->position.setX(res[i]->position.x() - x);
+            res[i]->position.setY(res[i]->position.y() - y);
+            res[i]->position.setZ(res[i]->position.z() - z);
         }
-
-
 
         return res;
     }
     
+
+
 };

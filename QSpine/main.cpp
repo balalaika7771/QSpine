@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     QSharedPointer<QToolBar> toolBar = QSharedPointer<QToolBar>(new QToolBar(&mainWindow));
     QSharedPointer<QLabel> text3 = QSharedPointer<QLabel>(new QLabel(&mainWindow));
 
-    parserFile pr("SDL_VBL_1.txt");
+    parserFile pr("SDL_VBL.txt");
     glWidget->setSpine(pr.get_spine());
     text->setText("eawde");
     // ƒобавление действий на панель инструментов
@@ -52,6 +52,6 @@ int main(int argc, char *argv[])
 }
 
 void Timer(QSharedPointer<GLWidget> glWidget, QSharedPointer<QLabel> text) {
-    pozvonok pz = glWidget->getCurSpine();
-    text->setText(QString::fromUtf8(pz.spine_name));
+    std::shared_ptr<Object> pz = glWidget->getCurSpine();
+    text->setText(QString::fromUtf8(pz->name));
 }
